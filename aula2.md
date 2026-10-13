@@ -745,15 +745,6 @@ Isso está diretamente relacionado às competências de:
                            │
                        ABSTRAÇÃO
 ```
-
----
-
-## Próximo passo
-
-Utilize os **10 exercícios** para praticar a implementação em C/C++, Python, Java, ou a linguagem de sua preferência.
-
-A recomendação é tentar resolver cada problema **sem consultar a solução inicialmente**, identificando primeiro:
-
 1. Quais são os dados?
 2. Como esses dados devem ser representados?
 3. Qual estrutura de dados é mais adequada?
