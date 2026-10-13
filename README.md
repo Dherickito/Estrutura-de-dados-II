@@ -50,4 +50,4 @@ Estudo de filas em que os elementos são atendidos de acordo com sua prioridade,
 5. Execute o arquivo Python com o comando:
 
 ```bash
-python .py
+python Estrutura-de-dados-II.py
