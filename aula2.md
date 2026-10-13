@@ -745,8 +745,4 @@ Isso está diretamente relacionado às competências de:
                            │
                        ABSTRAÇÃO
 ```
-1. Quais são os dados?
-2. Como esses dados devem ser representados?
-3. Qual estrutura de dados é mais adequada?
-4. Quais operações serão realizadas?
-5. Como implementar a solução?
+
