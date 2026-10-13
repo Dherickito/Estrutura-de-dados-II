@@ -1,6 +1,6 @@
 # Exercícios e Respostas — Referências, Ponteiros e Estruturas Dinâmicas
 
-## Exercício 1 — Referências e identidade de objetos
+## Referências e identidade de objetos
 
 **Enunciado:** Rode o código abaixo.
 
@@ -43,7 +43,7 @@ R: `b` receberia uma cópia independente de `a`, ou seja, um objeto diferente co
 
 ---
 
-## Exercício 2 — Montando uma cadeia de nós
+## Montando uma cadeia de nós
 
 **Enunciado:** Considere os nós abaixo.
 
@@ -92,7 +92,7 @@ None
 
 ---
 
-## Exercício 3 — Depuração
+## Depuração
 
 **Enunciado:** Analise o código abaixo.
 
@@ -189,7 +189,6 @@ paciente = fila.atender()
 print("Atendendo:", paciente.nome)
 ```
 
-**Resposta:**
 
 ```python
 class Paciente:
@@ -308,7 +307,6 @@ Carlos — 45 anos — Normal
 
 **Enunciado:** Amplie o sistema para que os pacientes com prioridade sejam atendidos antes dos pacientes normais.
 
-**Resposta:**
 
 ```python
 class Paciente:
@@ -428,7 +426,6 @@ fila.listar()
 
 **Enunciado:** Forme um grupo de 2 a 4 estudantes. Modelem, implementem, testem e depurem o sistema. Encontrem e corrijam pelo menos um erro proposital.
 
-**Resposta:**
 
 ```python
 class Paciente:
