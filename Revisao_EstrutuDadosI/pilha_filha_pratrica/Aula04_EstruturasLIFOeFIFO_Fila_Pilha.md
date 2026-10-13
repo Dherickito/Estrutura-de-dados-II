@@ -1,97 +1,81 @@
-# Pilhas e Filas em Python — Versão Explicada
+# Trabalho de Estruturas de Dados — Pilhas e Filas em Python
 
-Este material tem três exercícios. Em cada um você encontra:
-
-1. **O conceito** (com uma analogia do dia a dia)
-2. **O enunciado**
-3. **Como pensar** (a lógica antes do código)
-4. **O código comentado**
-5. **O passo a passo da execução**
-6. **A saída esperada**
-7. **Pontos de atenção** (eficiência e erros comuns)
+Neste trabalho eu resolvi três exercícios usando pilha e fila. Em cada um eu explico primeiro como entendi a ideia, depois mostro o código e por fim faço o teste de mesa, para conferir se o resultado bate com o que eu esperava.
 
 ---
 
-## Exercício 1 — Histórico de Navegador com Pilha (botão Voltar)
-
-### O conceito
-
-Uma **pilha** (*stack*) segue a regra **LIFO** (*Last In, First Out*): o **último** que entra é o **primeiro** que sai.
-
-Pense numa pilha de pratos: você coloca um prato novo em cima e, quando precisa de um, pega o de cima. Nunca tira o do meio ou o de baixo.
-
-Só existem duas operações principais:
-
-| Operação | O que faz | Em Python (lista) |
-|---|---|---|
-| **push** (empilhar) | coloca no topo | `lista.append(x)` |
-| **pop** (desempilhar) | remove do topo | `lista.pop()` |
+## Exercício 1 — Botão "Voltar" do navegador (Pilha)
 
 ### Enunciado
 
-Implemente uma Pilha (LIFO) aplicada a um navegador de internet simples, simulando o botão "Voltar": o programa deve permitir abrir páginas, voltar para a anterior e exibir o histórico de navegação.
+Implementar uma pilha (LIFO) para simular o botão "Voltar" de um navegador: abrir páginas, voltar para a anterior e mostrar o histórico.
 
-### Como pensar
+### Como eu entendi
 
-- Cada página aberta é **empilhada**. A página atual é sempre a do topo.
-- Clicar em "Voltar" **desempilha** a página do topo. A que estava embaixo vira a página atual.
-- Antes de desempilhar, é preciso checar se a pilha **não está vazia**. Senão o `pop()` gera erro (`IndexError`).
+A pilha funciona como uma pilha de pratos: o último prato que eu coloco é o primeiro que eu tiro. LIFO quer dizer *Last In, First Out* (o último a entrar é o primeiro a sair).
 
-### Código comentado
+Isso combina com o botão "Voltar", porque quando eu clico nele a página que sai é sempre a **última que eu abri**. As páginas mais antigas ficam guardadas embaixo, esperando.
+
+Para fazer isso em Python usei uma lista comum:
+
+- `append()` coloca no final da lista (isso é o **empilhar**);
+- `pop()` tira do final da lista (isso é o **desempilhar**).
+
+Então o **final da lista é o topo** da pilha.
+
+Uma coisa que eu percebi é que se eu chamar `pop()` numa lista vazia o programa dá erro (`IndexError`). Por isso, antes de voltar, eu verifico se tem alguma página no histórico.
+
+### Código
 
 ```python
 class Navegador:
     def __init__(self):
-        # __init__ é o construtor: roda quando criamos um Navegador.
-        # A pilha começa vazia. Usamos uma lista, onde o FIM da lista é o TOPO da pilha.
+        # começo com a pilha vazia (nenhuma página aberta ainda)
         self.pilha_paginas = []
 
     def visitar(self, pagina):
-        """Empilha uma nova página no topo do histórico (push)."""
-        # append() adiciona no final da lista, ou seja, no topo da pilha.
+        # empilhar: a página nova vai para o topo (final da lista)
         self.pilha_paginas.append(pagina)
         print(f"Página aberta: {pagina}")
 
     def voltar(self):
-        """Desempilha a página atual e retorna à anterior (pop, LIFO)."""
-        # len(...) > 0 garante que existe algo para remover.
+        # só dá para voltar se tiver alguma página na pilha
         if len(self.pilha_paginas) > 0:
-            # pop() remove E devolve o último elemento (o topo).
+            # pop() tira e devolve o último, que é o topo da pilha
             pagina_fechada = self.pilha_paginas.pop()
             print(f"Voltando, fechando a página: {pagina_fechada}")
         else:
-            # Pilha vazia: avisamos em vez de deixar o programa quebrar.
             print("Não há páginas para voltar!")
 
     def ver_historico(self):
-        """Mostra a pilha inteira, da base até o topo (a última é a atual)."""
+        # mostra da base (mais antiga) até o topo (mais recente)
         print(f"Histórico atual (base -> topo): {self.pilha_paginas}")
 
 
-# --- Exemplo de uso ---
-nav = Navegador()                 # cria o navegador (pilha vazia)
+# --- Testando ---
+nav = Navegador()
 
-nav.visitar("google.com")         # pilha: [google]
-nav.visitar("wikipedia.org")      # pilha: [google, wikipedia]
-nav.visitar("youtube.com")        # pilha: [google, wikipedia, youtube]
+nav.visitar("google.com")
+nav.visitar("wikipedia.org")
+nav.visitar("youtube.com")
 
 print("\n--- Clicando em 'Voltar' ---")
-nav.voltar()                      # remove youtube (o último a entrar)
-nav.voltar()                      # remove wikipedia
-nav.ver_historico()               # sobra só o google
+nav.voltar()
+nav.voltar()
+nav.ver_historico()
 ```
 
-### Passo a passo da execução
+### Teste de mesa
 
-| Comando | Pilha depois do comando (base → topo) | Página atual |
+| Passo | Comando | Pilha (base → topo) |
 |---|---|---|
-| `visitar("google.com")` | `[google]` | google |
-| `visitar("wikipedia.org")` | `[google, wikipedia]` | wikipedia |
-| `visitar("youtube.com")` | `[google, wikipedia, youtube]` | youtube |
-| `voltar()` | `[google, wikipedia]` | wikipedia |
-| `voltar()` | `[google]` | google |
+| 1 | `visitar("google.com")` | google |
+| 2 | `visitar("wikipedia.org")` | google, wikipedia |
+| 3 | `visitar("youtube.com")` | google, wikipedia, youtube |
+| 4 | `voltar()` (sai o youtube) | google, wikipedia |
+| 5 | `voltar()` (sai a wikipedia) | google |
 
-### Saída esperada
+### Saída do programa
 
 ```
 Página aberta: google.com
@@ -104,233 +88,216 @@ Voltando, fechando a página: wikipedia.org
 Histórico atual (base -> topo): ['google.com']
 ```
 
-### Pontos de atenção
-
-- `append()` e `pop()` no fim da lista são **O(1)**: custam o mesmo tempo, não importa o tamanho da pilha.
-- Sem o `if len(...) > 0`, chamar `voltar()` numa pilha vazia gera `IndexError: pop from empty list`.
-- Um navegador real também guarda uma pilha de "Avançar". Aqui simplificamos.
+A saída ficou como eu previ no teste de mesa: saíram primeiro o youtube e depois a wikipedia, e só o google ficou no histórico.
 
 ---
 
-## Exercício 2 — Pedidos de Lanchonete com Fila (FIFO)
-
-### O conceito
-
-Uma **fila** (*queue*) segue a regra **FIFO** (*First In, First Out*): o **primeiro** que entra é o **primeiro** que sai.
-
-É a fila do caixa: quem chegou antes é atendido antes.
-
-| Operação | O que faz | Em Python (`deque`) |
-|---|---|---|
-| **enqueue** (enfileirar) | entra no final | `fila.append(x)` |
-| **dequeue** (desenfileirar) | sai do início | `fila.popleft()` |
-
-### Por que `deque` e não lista comum?
-
-Numa lista, `lista.pop(0)` remove o primeiro item, mas precisa **deslocar todos os outros** uma posição para a esquerda. Com muitos itens, isso fica lento (**O(n)**). O `deque` (*double-ended queue*, "fila de duas pontas") é feito para inserir e remover nas duas pontas em tempo constante (**O(1)**).
+## Exercício 2 — Pedidos de uma lanchonete (Fila com deque)
 
 ### Enunciado
 
-Implemente uma Fila (FIFO) usando `deque` para simular o controle de pedidos de uma lanchonete, permitindo anotar pedidos, entregá-los na ordem de chegada e consultar os pedidos pendentes.
+Implementar uma fila (FIFO) usando `deque` para simular os pedidos de uma lanchonete: anotar pedidos, entregar na ordem em que chegaram e ver quais ainda estão pendentes.
 
-### Como pensar
+### Como eu entendi
 
-- Pedido novo → vai para o **final** (`append`).
-- Entrega → sai do **início** (`popleft`), porque é o pedido mais antigo.
-- Antes de entregar, conferir se há pedidos. Se não houver, avisar.
+A fila é o contrário da pilha. FIFO quer dizer *First In, First Out* (o primeiro a entrar é o primeiro a sair), igual à fila do caixa: quem chegou primeiro é atendido primeiro.
 
-### Código comentado
+- Pedido novo entra no **final** da fila → `append()`.
+- Pedido entregue sai do **início** da fila → `popleft()`.
+
+Por que `deque` e não uma lista normal? Pesquisei e vi que o `pop(0)` da lista é lento: depois de tirar o primeiro elemento, o Python precisa puxar todos os outros uma posição para trás. O `deque` foi feito para tirar do começo de forma rápida, então é a escolha certa para fila.
+
+Um erro que eu quase cometi: se eu usar `pop()` no deque, ele tira do **final**, e aí vira pilha e não fila. Para fila precisa ser `popleft()`.
+
+### Código
 
 ```python
-# O deque não vem "de fábrica": é preciso importá-lo do módulo collections.
+# o deque precisa ser importado do módulo collections
 from collections import deque
 
 
 class FilaPedidos:
     def __init__(self):
-        # Cria a fila vazia. O início é o lado esquerdo e o fim é o lado direito.
+        # fila começa vazia
         self.pedidos = deque()
 
     def receber_pedido(self, pedido):
-        """Coloca o novo pedido no final da fila (enqueue)."""
+        # pedido novo vai para o final da fila
         self.pedidos.append(pedido)
-        print(f" Pedido anotado: '{pedido}' (Em preparo...)")
+        print(f"Pedido anotado: '{pedido}' (Em preparo...)")
 
     def entregar_pedido(self):
-        """Entrega e remove o pedido mais antigo (dequeue, FIFO)."""
+        # só entrega se existir algum pedido na fila
         if len(self.pedidos) > 0:
-            # popleft() remove E devolve o item do INÍCIO da fila.
+            # popleft() tira o primeiro, ou seja, o pedido mais antigo
             pedido_atual = self.pedidos.popleft()
-            print(f" Entregando agora: '{pedido_atual}'")
+            print(f"Entregando agora: '{pedido_atual}'")
         else:
-            print(" Nenhum pedido pendente no momento.")
+            print("Nenhum pedido pendente no momento.")
 
     def ver_pedidos(self):
-        """Mostra os pedidos que ainda aguardam."""
-        # list(...) converte o deque em lista só para imprimir de forma bonita.
+        # transformo em lista só para a impressão ficar mais bonita
         print(f"Pedidos pendentes: {list(self.pedidos)}")
 
 
-# --- Testando a lanchonete ---
+# --- Testando ---
 lanchonete = FilaPedidos()
 
-lanchonete.receber_pedido("X-Burger + Refrigerante")   # fila: [X-Burger]
-lanchonete.receber_pedido("Porção de Batata Frita")    # fila: [X-Burger, Batata]
-lanchonete.receber_pedido("Milkshake de Morango")      # fila: [X-Burger, Batata, Milkshake]
+lanchonete.receber_pedido("X-Burger + Refrigerante")
+lanchonete.receber_pedido("Porção de Batata Frita")
+lanchonete.receber_pedido("Milkshake de Morango")
 
 print("\n--- Iniciando as entregas ---")
 
-lanchonete.entregar_pedido()   # sai o X-Burger (chegou primeiro)
-lanchonete.entregar_pedido()   # sai a Batata Frita
-lanchonete.ver_pedidos()       # sobra só o Milkshake
+lanchonete.entregar_pedido()
+lanchonete.entregar_pedido()
+lanchonete.ver_pedidos()
 ```
 
-### Passo a passo da execução
+### Teste de mesa
 
-| Comando | Fila depois do comando (início → fim) |
-|---|---|
-| `receber_pedido("X-Burger...")` | `[X-Burger]` |
-| `receber_pedido("Porção de Batata...")` | `[X-Burger, Batata]` |
-| `receber_pedido("Milkshake...")` | `[X-Burger, Batata, Milkshake]` |
-| `entregar_pedido()` | `[Batata, Milkshake]` |
-| `entregar_pedido()` | `[Milkshake]` |
+| Passo | Comando | Fila (início → fim) |
+|---|---|---|
+| 1 | `receber_pedido("X-Burger...")` | X-Burger |
+| 2 | `receber_pedido("Porção de Batata...")` | X-Burger, Batata |
+| 3 | `receber_pedido("Milkshake...")` | X-Burger, Batata, Milkshake |
+| 4 | `entregar_pedido()` (sai o X-Burger) | Batata, Milkshake |
+| 5 | `entregar_pedido()` (sai a Batata) | Milkshake |
 
-### Saída esperada
+### Saída do programa
 
 ```
- Pedido anotado: 'X-Burger + Refrigerante' (Em preparo...)
- Pedido anotado: 'Porção de Batata Frita' (Em preparo...)
- Pedido anotado: 'Milkshake de Morango' (Em preparo...)
+Pedido anotado: 'X-Burger + Refrigerante' (Em preparo...)
+Pedido anotado: 'Porção de Batata Frita' (Em preparo...)
+Pedido anotado: 'Milkshake de Morango' (Em preparo...)
 
 --- Iniciando as entregas ---
- Entregando agora: 'X-Burger + Refrigerante'
- Entregando agora: 'Porção de Batata Frita'
+Entregando agora: 'X-Burger + Refrigerante'
+Entregando agora: 'Porção de Batata Frita'
 Pedidos pendentes: ['Milkshake de Morango']
 ```
 
-### Pontos de atenção
-
-- **Pilha × Fila:** na pilha, entrega e remoção acontecem no mesmo lado (topo). Na fila, entram por um lado e saem pelo outro.
-- Se você usasse `pop()` (sem o `left`) no `deque`, entregaria o pedido **mais novo**, que é o comportamento de pilha. É um erro comum.
+Os pedidos foram entregues na mesma ordem em que foram anotados, então a regra FIFO foi respeitada.
 
 ---
 
-## Exercício 3 — Fila de Check-in com Prioridade (Aeroporto)
-
-### O conceito
-
-Aqui a fila é construída **à mão**, com uma **lista encadeada**. Cada elemento é um **nó** que guarda duas coisas:
-
-1. o **dado** (o passageiro);
-2. um **ponteiro** (`proximo`) que aponta para o nó seguinte.
-
-```
-inicio → [Beatriz | •] → [Marina | •] → [Rafael | None]
-                                              ↑
-                                             fim
-```
-
-A fila guarda dois ponteiros: `inicio` (quem será atendido primeiro) e `fim` (último da fila). Guardar o `fim` evita percorrer a fila inteira só para adicionar alguém no final.
+## Exercício 3 — Check-in do aeroporto com prioridade (Fila encadeada)
 
 ### Enunciado
 
-Amplie o sistema de atendimento de um balcão de check-in para que passageiros preferenciais sejam atendidos antes dos passageiros comuns, organizando corretamente os nós e os ponteiros da lista encadeada.
+Ampliar o sistema de atendimento de um balcão de check-in para que passageiros preferenciais sejam atendidos antes dos comuns, organizando corretamente os nós e os ponteiros da lista encadeada.
 
-### Como pensar
+### Como eu entendi
 
-O novo passageiro cai em um destes três casos:
+Esse foi o exercício mais difícil. Aqui não usei lista nem deque: construí a fila com **nós ligados entre si** (lista encadeada).
 
-1. **Fila vazia:** ele vira `inicio` e `fim` ao mesmo tempo.
-2. **Ele é preferencial:** precisa furar os comuns, mas **não** os outros preferenciais (quem chegou antes continua na frente). Ele entra **depois do último preferencial**. Se não há nenhum preferencial, vai para o início.
-3. **Ele é comum:** vai para o final, como em qualquer fila.
+Cada nó guarda duas coisas: o **passageiro** e o **`proximo`**, que aponta para o nó seguinte. O último nó aponta para `None`, que quer dizer "não tem mais ninguém depois".
 
-### Código comentado
+```
+inicio → [Beatriz] → [Marina] → [Rafael] → None
+                                   ↑
+                                  fim
+```
+
+A fila guarda dois ponteiros: o `inicio` (quem vai ser atendido primeiro) e o `fim` (o último). Guardar o `fim` ajuda porque assim eu não preciso andar a fila toda para colocar alguém no final.
+
+Quando chega um passageiro novo, pensei em **três casos**:
+
+1. **A fila está vazia.** O nó novo vira o `inicio` e o `fim` ao mesmo tempo.
+2. **O passageiro é preferencial.** Ele passa na frente dos comuns, mas não dos outros preferenciais (quem chegou antes continua na frente). Aqui tem duas situações:
+   - se o primeiro da fila **não** é preferencial, o novo vira o primeiro;
+   - se o primeiro **já é** preferencial, eu ando pela fila até achar o último preferencial e encaixo o novo logo depois dele.
+3. **O passageiro é comum.** Vai para o final, como numa fila normal.
+
+O ponto que mais exigiu atenção foi a **ordem das duas linhas de ponteiro** no caso 2. Primeiro o novo nó precisa apontar para quem vinha depois, e só então o nó de trás aponta para o novo. Se eu fizesse ao contrário, perderia o resto da fila.
+
+### Código
 
 ```python
 class Passageiro:
     def __init__(self, nome, idade, categoria):
         self.nome = nome
         self.idade = idade
-        self.categoria = categoria   # "Comum" ou "Preferencial"
+        self.categoria = categoria  # "Comum" ou "Preferencial"
 
 
 class No:
-    """Um nó da lista encadeada: guarda um passageiro e aponta para o próximo."""
+    # cada nó guarda um passageiro e aponta para o próximo da fila
     def __init__(self, passageiro):
         self.passageiro = passageiro
-        self.proximo = None          # None = ainda não aponta para ninguém
+        self.proximo = None
 
 
 class FilaCheckin:
     def __init__(self):
-        self.inicio = None           # primeiro da fila (próximo a ser atendido)
-        self.fim = None              # último da fila
-        self._tamanho = 0            # contador de passageiros
+        self.inicio = None   # primeiro da fila
+        self.fim = None      # último da fila
+        self._tamanho = 0
 
     def esta_vazia(self):
-        # A fila está vazia quando não existe um primeiro nó.
         return self.inicio is None
 
     def tamanho(self):
         return self._tamanho
 
     def adicionar(self, passageiro):
-        novo_no = No(passageiro)     # embrulha o passageiro em um nó
+        novo_no = No(passageiro)
 
-        # CASO 1: fila vazia -> o novo nó é, ao mesmo tempo, início e fim.
+        # Caso 1: fila vazia, o novo é o primeiro e o último
         if self.esta_vazia():
             self.inicio = novo_no
             self.fim = novo_no
 
-        # CASO 2: passageiro PREFERENCIAL
-        # .lower() deixa tudo minúsculo, assim "Preferencial" e "preferencial" valem igual.
+        # Caso 2: passageiro preferencial
+        # (uso lower() para não depender de letra maiúscula ou minúscula)
         elif passageiro.categoria.lower() == "preferencial":
 
-            # 2a) O primeiro da fila NÃO é preferencial: ninguém preferencial na fila.
-            #     O novo passa para a frente de todos.
+            # 2a: o primeiro não é preferencial, então o novo passa para a frente
             if self.inicio.passageiro.categoria.lower() != "preferencial":
-                novo_no.proximo = self.inicio   # o novo aponta para o antigo primeiro
-                self.inicio = novo_no           # e vira o novo primeiro
+                novo_no.proximo = self.inicio
+                self.inicio = novo_no
 
-            # 2b) Já há preferenciais na frente: entra DEPOIS do último deles.
+            # 2b: já tem preferencial na frente, então o novo entra depois do último deles
             else:
                 atual = self.inicio
-                # Anda pela fila enquanto o PRÓXIMO nó também for preferencial.
+                # ando enquanto o próximo também for preferencial
                 while (atual.proximo is not None and
                        atual.proximo.passageiro.categoria.lower() == "preferencial"):
                     atual = atual.proximo
-                # Agora 'atual' é o último preferencial. Encaixamos o novo logo depois:
-                novo_no.proximo = atual.proximo   # 1º: novo aponta para quem vinha depois
-                atual.proximo = novo_no           # 2º: o último preferencial aponta para o novo
 
-                # Se não havia ninguém depois, o novo é o último da fila: atualiza o fim.
+                # primeiro o novo aponta para quem vinha depois...
+                novo_no.proximo = atual.proximo
+                # ...e só então o último preferencial aponta para o novo
+                atual.proximo = novo_no
+
+                # se não tinha ninguém depois, o novo virou o último da fila
                 if novo_no.proximo is None:
                     self.fim = novo_no
 
-        # CASO 3: passageiro COMUM -> vai para o final.
+        # Caso 3: passageiro comum, vai para o final
         else:
-            self.fim.proximo = novo_no   # o último atual aponta para o novo
-            self.fim = novo_no           # e o novo passa a ser o último
+            self.fim.proximo = novo_no
+            self.fim = novo_no
 
-        self._tamanho += 1               # em qualquer caso, a fila cresceu em 1
+        self._tamanho += 1
 
     def listar(self):
         if self.esta_vazia():
             print("Fila vazia.")
             return
 
-        atual = self.inicio              # começa no primeiro nó
+        atual = self.inicio
         print("\n--- SITUAÇÃO DA FILA DE CHECK-IN ---")
         posicao = 1
-        while atual is not None:         # percorre até chegar ao fim (None)
+        while atual is not None:
             p = atual.passageiro
             print(f"{posicao}. {p.nome} — {p.idade} anos — [{p.categoria}]")
-            atual = atual.proximo        # avança para o próximo nó
+            atual = atual.proximo
             posicao += 1
         print("------------------------------------\n")
 
 
-# --- Testando a fila com prioridade ---
+# --- Testando ---
 fila = FilaCheckin()
 fila.adicionar(Passageiro("Marina", 28, "Comum"))
 fila.adicionar(Passageiro("Rafael", 61, "Comum"))
@@ -339,26 +306,24 @@ fila.adicionar(Passageiro("Beatriz", 39, "Preferencial"))
 fila.listar()
 ```
 
-### Passo a passo da execução
+### Teste de mesa
 
-| Comando | Caso usado | Fila depois (início → fim) |
-|---|---|---|
-| `adicionar(Marina, Comum)` | 1 (fila vazia) | `Marina` |
-| `adicionar(Rafael, Comum)` | 3 (comum, vai ao final) | `Marina → Rafael` |
-| `adicionar(Beatriz, Preferencial)` | 2a (não há preferencial na frente) | `Beatriz → Marina → Rafael` |
+| Passo | Comando | Caso | Fila (início → fim) |
+|---|---|---|---|
+| 1 | `adicionar(Marina, Comum)` | 1 (fila vazia) | Marina |
+| 2 | `adicionar(Rafael, Comum)` | 3 (comum, vai ao final) | Marina → Rafael |
+| 3 | `adicionar(Beatriz, Preferencial)` | 2a (não há preferencial na frente) | Beatriz → Marina → Rafael |
 
-### Exemplo extra: o caso 2b em ação
+Para testar o caso 2b, que não aparece no exemplo acima, imaginei que chegasse o **Tiago (Preferencial)** depois da Beatriz:
 
-Se agora chegasse **Tiago (Preferencial)**:
+- O primeiro da fila (Beatriz) é preferencial, então caio no 2b.
+- O `while` começa na Beatriz. O próximo dela (Marina) é comum, então o laço para.
+- Tiago aponta para Marina, e Beatriz passa a apontar para Tiago.
+- Resultado: Beatriz → Tiago → Marina → Rafael.
 
-- O primeiro da fila (Beatriz) **é** preferencial, então cai no caso 2b.
-- O `while` começa em Beatriz. O próximo dela (Marina) **não** é preferencial, então o laço para com `atual = Beatriz`.
-- Tiago aponta para Marina e Beatriz aponta para Tiago.
-- Resultado: `Beatriz → Tiago → Marina → Rafael`.
+Fui conferir rodando o código e deu exatamente essa ordem.
 
-Quem chegou antes entre os preferenciais continua na frente. Isso é o que chamamos de prioridade **estável**.
-
-### Saída esperada
+### Saída do programa
 
 ```
 --- SITUAÇÃO DA FILA DE CHECK-IN ---
@@ -368,20 +333,18 @@ Quem chegou antes entre os preferenciais continua na frente. Isso é o que chama
 ------------------------------------
 ```
 
-### Pontos de atenção
-
-- **A ordem das duas linhas de ponteiro importa** no caso 2b. Se você fizesse `atual.proximo = novo_no` primeiro, perderia a referência ao resto da fila.
-- Guardar o `fim` torna a inserção de passageiros comuns **O(1)**. Inserir um preferencial pode precisar percorrer os preferenciais já existentes (**O(k)**, sendo k a quantidade deles).
-- Este código ainda não tem método para **chamar** o próximo (remover o `inicio`). Se precisar, a lógica é: guardar `self.inicio`, mover `self.inicio` para `self.inicio.proximo` e, se a fila ficar vazia, colocar `self.fim = None`.
-
 ---
 
-## Resumo comparativo
+## Conclusão
+
+Com esses exercícios eu entendi melhor a diferença entre as estruturas:
 
 | | Pilha | Fila | Fila com prioridade |
 |---|---|---|---|
-| **Regra** | LIFO (último entra, primeiro sai) | FIFO (primeiro entra, primeiro sai) | FIFO, mas preferenciais furam os comuns |
-| **Exemplo** | Botão Voltar | Pedidos da lanchonete | Check-in do aeroporto |
-| **Estrutura** | Lista (`append`/`pop`) | `deque` (`append`/`popleft`) | Lista encadeada (nós e ponteiros) |
-| **Entrada** | Topo | Final | Depende da categoria |
-| **Saída** | Topo | Início | Início |
+| Regra | LIFO | FIFO | FIFO, com preferenciais na frente |
+| Exemplo | Botão Voltar | Pedidos da lanchonete | Check-in do aeroporto |
+| Como fiz | Lista (`append` e `pop`) | `deque` (`append` e `popleft`) | Nós e ponteiros |
+
+O que achei mais fácil foi a pilha, porque a lista do Python já tem os métodos prontos. O mais difícil foi a fila com prioridade, principalmente a parte dos ponteiros, em que um erro na ordem das atribuições faz a fila "se perder". Desenhar os nós no papel antes de programar ajudou bastante.
+
+Também aprendi que dá para melhorar o último exercício: ele ainda não tem um método para **chamar o próximo** passageiro (remover o primeiro da fila). Para isso bastaria mover o `inicio` para `inicio.proximo` e, se a fila ficasse vazia, colocar o `fim` como `None`.
