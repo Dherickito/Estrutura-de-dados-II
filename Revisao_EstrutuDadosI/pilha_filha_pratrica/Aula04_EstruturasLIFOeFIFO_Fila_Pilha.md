@@ -154,16 +154,16 @@ class FilaPedidos:
     def receber_pedido(self, pedido):
         """Coloca o novo pedido no final da fila (enqueue)."""
         self.pedidos.append(pedido)
-        print(f"🧾 Pedido anotado: '{pedido}' (Em preparo...)")
+        print(f" Pedido anotado: '{pedido}' (Em preparo...)")
 
     def entregar_pedido(self):
         """Entrega e remove o pedido mais antigo (dequeue, FIFO)."""
         if len(self.pedidos) > 0:
             # popleft() remove E devolve o item do INÍCIO da fila.
             pedido_atual = self.pedidos.popleft()
-            print(f"🍔 Entregando agora: '{pedido_atual}'")
+            print(f" Entregando agora: '{pedido_atual}'")
         else:
-            print("🕐 Nenhum pedido pendente no momento.")
+            print(" Nenhum pedido pendente no momento.")
 
     def ver_pedidos(self):
         """Mostra os pedidos que ainda aguardam."""
@@ -198,13 +198,13 @@ lanchonete.ver_pedidos()       # sobra só o Milkshake
 ### Saída esperada
 
 ```
-🧾 Pedido anotado: 'X-Burger + Refrigerante' (Em preparo...)
-🧾 Pedido anotado: 'Porção de Batata Frita' (Em preparo...)
-🧾 Pedido anotado: 'Milkshake de Morango' (Em preparo...)
+ Pedido anotado: 'X-Burger + Refrigerante' (Em preparo...)
+ Pedido anotado: 'Porção de Batata Frita' (Em preparo...)
+ Pedido anotado: 'Milkshake de Morango' (Em preparo...)
 
 --- Iniciando as entregas ---
-🍔 Entregando agora: 'X-Burger + Refrigerante'
-🍔 Entregando agora: 'Porção de Batata Frita'
+ Entregando agora: 'X-Burger + Refrigerante'
+ Entregando agora: 'Porção de Batata Frita'
 Pedidos pendentes: ['Milkshake de Morango']
 ```
 
